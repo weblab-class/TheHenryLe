@@ -1,0 +1,38 @@
+.guess-grid {
+  margin-top: 1rem;
+}
+
+.guess-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tile {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: white;
+}
+
+.tile:nth-child(1) {
+  width: 80px;
+}
+
+/* Wordle colors */
+.tile.correct {
+  background-color: #6aaa64;
+}
+
+.tile.present {
+  background-color: #c9b458;
+}
+
+.tile.absent {
+  background-color: #787c7e;
+}

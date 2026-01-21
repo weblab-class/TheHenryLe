@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import "./GamePlay.css";
 
 const HINT_TEXT = {
   q1: "Is it on east side?",
@@ -11,44 +11,67 @@ const HINT_TEXT = {
 
 const DIRECTIONS = ["", "E", "W", "NE", "NW", "SE", "SW"];
 
+const scoreGuess = (guessParts, answerParts) => {
+  return guessParts.map((part, i) => {
+    if (part === answerParts[i]) {
+      return { char: part, status: "correct" };
+    }
+    if (answerParts.includes(part)) {
+      return { char: part, status: "present" };
+    }
+    return { char: part, status: "absent" };
+  });
+};
+
 const GamePlay = ({ building, onGameEnd }) => {
   const [selectedDirection, setSelectedDirection] = useState("");
   const [selectedNumber, setSelectedNumber] = useState("");
-  const [guesses, setGuesses] = useState([]);
-  const [revealedHints, setRevealedHints] = useState(1); // first hint shown
+  const [scoredGuesses, setScoredGuesses] = useState([]);
+  const [revealedHints, setRevealedHints] = useState(1);
   const [gameState, setGameState] = useState("playing");
 
   const MAX_GUESSES = 5;
 
   useEffect(() => {
-    // Reset all state when a new building arrives
     setSelectedDirection("");
     setSelectedNumber("");
-    setGuesses([]);
+    setScoredGuesses([]);
     setRevealedHints(1);
     setGameState("playing");
   }, [building]);
 
   const handleSubmit = () => {
     if (gameState !== "playing") return;
+    if (!selectedNumber || selectedNumber.length < 2) return;
 
-    const userGuess = `${selectedDirection}${selectedNumber}`.toLowerCase();
-    const answer = `${building.direction}${building.number}`.toLowerCase();
+    const guessParts = [
+      selectedDirection.toUpperCase(),
+      selectedNumber[0].toUpperCase(),
+      selectedNumber[1].toUpperCase(),
+    ];
 
-    setGuesses((prev) => [...prev, userGuess]);
+    const answerParts = [
+      building.direction.toUpperCase(),
+      String(building.number)[0].toUpperCase(),
+      String(building.number)[1].toUpperCase(),
+    ];
 
-    if (userGuess === answer) {
+    const scored = scoreGuess(guessParts, answerParts);
+    setScoredGuesses((prev) => [...prev, scored]);
+
+    const guessString = guessParts.join("");
+    const answerString = answerParts.join("");
+
+    if (guessString === answerString) {
       setGameState("won");
-      return; // stop here, do NOT restart the game yet
+      return;
     }
 
-    // Wrong guess
-    if (guesses.length + 1 >= MAX_GUESSES) {
+    if (scoredGuesses.length + 1 >= MAX_GUESSES) {
       setGameState("lost");
       return;
     }
 
-    // Reveal next hint
     setRevealedHints((prev) => prev + 1);
   };
 
@@ -75,7 +98,18 @@ const GamePlay = ({ building, onGameEnd }) => {
         </>
       )}
 
-      {/* Hints Section */}
+      <div className="guess-grid">
+        {scoredGuesses.map((row, rowIndex) => (
+          <div key={rowIndex} className="guess-row">
+            {row.map((tile, tileIndex) => (
+              <div key={tileIndex} className={`tile ${tile.status}`}>
+                {tile.char}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+
       <div className="hints">
         {Object.keys(HINT_TEXT).map((key, index) => {
           const hintNumber = index + 1;
@@ -93,14 +127,7 @@ const GamePlay = ({ building, onGameEnd }) => {
       {gameState === "won" && (
         <div className="end-screen">
           <div>You got it!</div>
-          <button
-            onClick={() => {
-              console.log("Play Again clicked");
-              onGameEnd();
-            }}
-          >
-            Play Again
-          </button>
+          <button onClick={onGameEnd}>Play Again</button>
         </div>
       )}
 
