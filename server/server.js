@@ -36,7 +36,8 @@ const socketManager = require("./server-socket");
 
 // Server configuration below
 // TODO change connection URL after setting up your team database
-const mongoConnectionURL = process.env.MONGO_SRV;
+const mongoConnectionURL =
+  "mongodb+srv://henryleuniv_db_user:CB1pmdrkMnX8oKnM@cluster0.e0su1jn.mongodb.net/?appName=Cluster0";
 // TODO change database name to the name you chose
 const databaseName = "weblab_timdle";
 

@@ -1,42 +1,27 @@
-import React, { useContext } from "react";
-import { GoogleLogin, googleLogout } from "@react-oauth/google";
-
-import "../../utilities.css";
-import "./Skeleton.css";
-import { UserContext } from "../App";
-import { Link } from "react-router-dom";
-import { useState } from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { get } from "../../utilities";
+import GamePlay from "../modules/GamePlay";
 
 const InfiniteMode = () => {
-  const { userId, handleLogin, handleLogout } = useContext(UserContext);
-  const [guess, setGuess] = useState("");
-  const [guesses, setGuesses] = useState([]);
-  const [hintLevel, setHintLevel] = useState(0);
-  const [isCorrect, setIsCorrect] = useState(false);
+  const [building, setBuilding] = useState(null);
 
-  useEffect(() => {
-    console.log("Updated guesses:", guesses);
-  }, [guesses]);
+  const startGame = () => {
+    console.log("startGame called");
 
-  const handleSubmit = () => {
-    console.log("guess: " + guess);
-    const guessChars = guess.split("");
-    console.log("guessChars: " + guessChars);
-    let guessCorrects = [];
-    setGuesses([...guesses, guess]);
-    setGuess("");
-    console.log("guess: " + guess);
+    get("/api/random-building").then((b) => {
+      console.log("New building:", b);
+      setBuilding(b);
+    });
   };
 
+  useEffect(() => {
+    startGame();
+  }, []);
+
   return (
-    <div className="input-section">
-      <input
-        value={guess}
-        onChange={(e) => setGuess(e.target.value)}
-        placeholder="Guess the MIT building..."
-      />
-      <button onClick={handleSubmit}>Submit</button>
+    <div>
+      {!building && <div>Loading...</div>}
+      {building && <GamePlay key={building._id} building={building} onGameEnd={startGame} />}
     </div>
   );
 };

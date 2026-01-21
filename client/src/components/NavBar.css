@@ -1,6 +1,7 @@
 .navbar {
   display: flex;
-  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
   padding: 1rem;
   background: #f0f0f0;
   border-bottom: 1px solid #ccc;
@@ -9,10 +10,12 @@
 .navbar a {
   text-decoration: none;
   color: #333;
+  margin: 0 1rem; /* ← this is the spacing you wanted */
 }
 
 .navbar-title-bold {
-  font-weight: bold;
+  font-weight: 900;
+  font-size: 25px;
 }
 
 .logout-btn {
