@@ -4,8 +4,11 @@ import { GoogleLogin, googleLogout } from "@react-oauth/google";
 import "../../utilities.css";
 import "./Skeleton.css";
 import { UserContext } from "../App";
+import { Link } from "react-router-dom";
 
 const Skeleton = () => {
+  //copilot diagnostic
+  console.log("context:", useContext(UserContext));
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
   return (
     <>
@@ -22,6 +25,15 @@ const Skeleton = () => {
         <GoogleLogin onSuccess={handleLogin} onError={(err) => console.log(err)} />
       )}
       <h1>Good luck on your project :)</h1>
+      <div>
+        {" "}
+        <Link to="/profile">Go to Profile</Link>
+      </div>
+      <div>
+        {" "}
+        <Link to="/infinitemode">Go to the Infinite</Link>
+      </div>
+
       <h2> What you need to change in this skeleton</h2>
       <ul>
         <li>
