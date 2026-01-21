@@ -10,6 +10,8 @@ const Profile = () => {
       {userId ? (
         <>
           <p>Your user ID is: {userId}</p>
+          <p>Add average score statistic later</p>
+          <p>Maybe add a graph guesses plotted against nth game</p>
           <button onClick={handleLogout}>Logout</button>
         </>
       ) : (
