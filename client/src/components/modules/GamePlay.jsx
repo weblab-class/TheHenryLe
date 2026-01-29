@@ -25,6 +25,9 @@ const scoreGuess = (guessParts, answerParts) => {
 };
 
 const GamePlay = ({ building, onGameEnd }) => {
+  if (!building) {
+    return <div>Loading…</div>;
+  }
   const [selectedDirection, setSelectedDirection] = useState("");
   const [selectedNumber, setSelectedNumber] = useState("");
   const [scoredGuesses, setScoredGuesses] = useState([]);
@@ -43,40 +46,48 @@ const GamePlay = ({ building, onGameEnd }) => {
 
   const handleSubmit = () => {
     if (gameState !== "playing") return;
-    if (!selectedNumber || selectedNumber.length < 2) return;
 
-    const guessParts = [
-      selectedDirection.toUpperCase(),
-      selectedNumber[0].toUpperCase(),
-      selectedNumber[1].toUpperCase(),
-    ];
+    // Validate input BEFORE touching characters
+    if (!selectedNumber || selectedNumber.length < 2) {
+      return;
+    }
+
+    const dir = (selectedDirection || "").toUpperCase();
+    const num1 = (selectedNumber[0] || "").toUpperCase();
+    const num2 = (selectedNumber[1] || "").toUpperCase();
+
+    const guessParts = [dir, num1, num2];
 
     const answerParts = [
-      building.direction.toUpperCase(),
-      String(building.number)[0].toUpperCase(),
-      String(building.number)[1].toUpperCase(),
+      (building.direction || "").toUpperCase(),
+      String(building.number)[0]?.toUpperCase() || "",
+      String(building.number)[1]?.toUpperCase() || "",
     ];
-
-    const scored = scoreGuess(guessParts, answerParts);
-    setScoredGuesses((prev) => [...prev, scored]);
 
     const guessString = guessParts.join("");
     const answerString = answerParts.join("");
 
+    // Compute BEFORE updating state
     const guessesThisGame = scoredGuesses.length + 1;
 
+    // WIN
     if (guessString === answerString) {
       setGameState("won");
       post("/api/game/finish", { guessesThisGame });
+      setScoredGuesses((prev) => [...prev, scoreGuess(guessParts, answerParts)]);
       return;
     }
 
+    // LOSS
     if (guessesThisGame >= MAX_GUESSES) {
       setGameState("lost");
       post("/api/game/finish", { guessesThisGame });
+      setScoredGuesses((prev) => [...prev, scoreGuess(guessParts, answerParts)]);
       return;
     }
 
+    // NORMAL GUESS
+    setScoredGuesses((prev) => [...prev, scoreGuess(guessParts, answerParts)]);
     setRevealedHints((prev) => prev + 1);
   };
   //deals with the pre-rendered grids
