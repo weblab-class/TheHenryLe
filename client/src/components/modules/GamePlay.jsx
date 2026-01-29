@@ -47,7 +47,6 @@ const GamePlay = ({ building, onGameEnd }) => {
   const handleSubmit = () => {
     if (gameState !== "playing") return;
 
-    // Validate input BEFORE touching characters
     if (!selectedNumber || selectedNumber.length < 2) {
       return;
     }
@@ -67,10 +66,8 @@ const GamePlay = ({ building, onGameEnd }) => {
     const guessString = guessParts.join("");
     const answerString = answerParts.join("");
 
-    // Compute BEFORE updating state
     const guessesThisGame = scoredGuesses.length + 1;
 
-    // WIN
     if (guessString === answerString) {
       setGameState("won");
       post("/api/game/finish", { guessesThisGame });
@@ -78,7 +75,6 @@ const GamePlay = ({ building, onGameEnd }) => {
       return;
     }
 
-    // LOSS
     if (guessesThisGame >= MAX_GUESSES) {
       setGameState("lost");
       post("/api/game/finish", { guessesThisGame });
@@ -86,7 +82,6 @@ const GamePlay = ({ building, onGameEnd }) => {
       return;
     }
 
-    // NORMAL GUESS
     setScoredGuesses((prev) => [...prev, scoreGuess(guessParts, answerParts)]);
     setRevealedHints((prev) => prev + 1);
   };
