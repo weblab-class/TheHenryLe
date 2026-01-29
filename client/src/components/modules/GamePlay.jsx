@@ -3,7 +3,7 @@ import "./GamePlay.css";
 import { post } from "../../utilities";
 
 const HINT_TEXT = {
-  q1: "Is it on east side?",
+  q1: "Is it east of Mass. Ave.?",
   q2: "Does it have a letter?",
   q3: "More than 6 floors?",
   q4: "Is it north of Vassar St?",
