@@ -43,6 +43,9 @@ const App = () => {
     handleLogin,
     handleLogout,
   };
+  useEffect(() => {
+    document.title = "Timdle";
+  }, []);
 
   return (
     <UserContext.Provider value={authContextValue}>

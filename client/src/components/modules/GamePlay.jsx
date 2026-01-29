@@ -9,7 +9,7 @@ const HINT_TEXT = {
   q5: "Is it a dorm?",
 };
 
-const DIRECTIONS = ["", "E", "W", "NE", "NW", "SE", "SW"];
+const DIRECTIONS = ["", "E", "W", "NE", "NW"];
 
 const scoreGuess = (guessParts, answerParts) => {
   return guessParts.map((part, i) => {
@@ -74,48 +74,15 @@ const GamePlay = ({ building, onGameEnd }) => {
 
     setRevealedHints((prev) => prev + 1);
   };
-
+  //deals with the pre-rendered grids
+  const blankRow = ["", "", ""];
   return (
     <div className="gameplay-container">
-      {gameState === "playing" && (
-        <>
-          <select value={selectedDirection} onChange={(e) => setSelectedDirection(e.target.value)}>
-            {DIRECTIONS.map((dir) => (
-              <option key={dir} value={dir}>
-                {dir}
-              </option>
-            ))}
-          </select>
-
-          <input
-            type="number"
-            value={selectedNumber}
-            onChange={(e) => setSelectedNumber(e.target.value)}
-            placeholder="Building number"
-          />
-
-          <button onClick={handleSubmit}>Submit</button>
-        </>
-      )}
-
-      <div className="guess-grid">
-        {scoredGuesses.map((row, rowIndex) => (
-          <div key={rowIndex} className="guess-row">
-            {row.map((tile, tileIndex) => (
-              <div key={tileIndex} className={`tile ${tile.status}`}>
-                {tile.char}
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
-
       <div className="hints">
         {Object.keys(HINT_TEXT).map((key, index) => {
           const hintNumber = index + 1;
           const isRevealed = hintNumber <= revealedHints;
           const isTrue = building.questions[key] === true;
-
           return (
             <p key={key}>
               Hint {hintNumber}: {HINT_TEXT[key]} → {isRevealed ? (isTrue ? "True" : "False") : "?"}
@@ -123,23 +90,72 @@ const GamePlay = ({ building, onGameEnd }) => {
           );
         })}
       </div>
+      <div className="centered-content">
+        <div className="guess-grid">
+          {scoredGuesses.map((row, rowIndex) => (
+            <div key={rowIndex} className="guess-row">
+              {row.map((tile, tileIndex) => (
+                <div key={tileIndex} className={`tile ${tile.status}`}>
+                  {tile.char}
+                </div>
+              ))}
+            </div>
+          ))}
 
-      {gameState === "won" && (
-        <div className="end-screen">
-          <div>You got it!</div>
-          <button onClick={onGameEnd}>Play Again</button>
+          {Array.from({ length: MAX_GUESSES - scoredGuesses.length }).map((_, i) => (
+            <div key={`blank-${i}`} className="guess-row">
+              {blankRow.map((_, j) => (
+                <div key={j} className="tile blank"></div>
+              ))}
+            </div>
+          ))}
         </div>
-      )}
 
-      {gameState === "lost" && (
-        <div className="end-screen">
-          <div>
-            Out of guesses! The answer was {building.direction}
-            {building.number}
+        {gameState === "playing" && (
+          <div className="input-row">
+            <select
+              value={selectedDirection}
+              onChange={(e) => setSelectedDirection(e.target.value)}
+            >
+              {DIRECTIONS.map((dir) => (
+                <option key={dir} value={dir}>
+                  {dir}
+                </option>
+              ))}
+            </select>
+
+            <input
+              type="number"
+              className="guess-input"
+              value={selectedNumber}
+              onChange={(e) => setSelectedNumber(e.target.value)}
+              placeholder="Guess the building number (2 digits)"
+            />
+
+            <button onClick={handleSubmit}>Submit</button>
           </div>
-          <button onClick={onGameEnd}>Play Again</button>
-        </div>
-      )}
+        )}
+
+        {gameState === "won" && (
+          <div className="end-screen">
+            <div>
+              You got it! The answer was {building.name} ({building.direction}
+              {building.number})
+            </div>
+            <button onClick={onGameEnd}>Play Again</button>
+          </div>
+        )}
+
+        {gameState === "lost" && (
+          <div className="end-screen">
+            <div>
+              Out of guesses! The answer was {building.name} ({building.direction}
+              {building.number})
+            </div>
+            <button onClick={onGameEnd}>Play Again</button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

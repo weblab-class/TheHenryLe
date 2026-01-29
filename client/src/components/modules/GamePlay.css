@@ -1,5 +1,10 @@
 .guess-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centers all rows */
+  justify-content: center;
   margin-top: 1rem;
+  width: 100%;
 }
 
 .guess-row {
@@ -9,22 +14,26 @@
 }
 
 .tile {
-  width: 40px;
-  height: 40px;
+  width: 55px;
+  height: 55px;
   border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1.6rem;
   color: white;
 }
 
 .tile:nth-child(1) {
-  width: 80px;
+  width: 110px;
 }
 
-/* Wordle colors */
+.tile.blank {
+  background-color: #d3d6da; /* Wordle-style blank */
+  border: 2px solid #d3d6da;
+}
+
 .tile.correct {
   background-color: #6aaa64;
 }
@@ -35,4 +44,57 @@
 
 .tile.absent {
   background-color: #787c7e;
+}
+
+.guess-input {
+  width: 325px;
+  font-size: 1.2rem;
+}
+.gameplay-container {
+  margin-top: -100px;
+  font-size: 1.3rem;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  gap: 3rem;
+}
+
+.hints {
+  flex: 0 1 auto;
+  min-width: 350px;
+  max-width: 500px;
+  padding-top: 30px;
+}
+
+.hints p {
+  height: calc((55px + 0.5rem) * 1.2);
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding-top: 3px;
+}
+
+select,
+button {
+  font-size: 1.2rem;
+}
+
+.centered-content {
+  transform: scale(1.2);
+  transform-origin: top center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
 }
