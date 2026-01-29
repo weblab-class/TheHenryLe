@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./GamePlay.css";
+import { post } from "../../utilities";
 
 const HINT_TEXT = {
   q1: "Is it on east side?",
@@ -62,13 +63,17 @@ const GamePlay = ({ building, onGameEnd }) => {
     const guessString = guessParts.join("");
     const answerString = answerParts.join("");
 
+    const guessesThisGame = scoredGuesses.length + 1;
+
     if (guessString === answerString) {
       setGameState("won");
+      post("/api/game/finish", { guessesThisGame });
       return;
     }
 
-    if (scoredGuesses.length + 1 >= MAX_GUESSES) {
+    if (guessesThisGame >= MAX_GUESSES) {
       setGameState("lost");
+      post("/api/game/finish", { guessesThisGame });
       return;
     }
 

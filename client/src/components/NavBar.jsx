@@ -11,6 +11,7 @@ const NavBar = () => {
     <nav className="navbar">
       <div className="navbar-title-bold">Timdle </div>
       <Link to="/infinitemode">Infinite Mode </Link>
+      <Link to="/NotFound">Classic Mode (Coming Soon!)</Link>
       <Link to="/profile">Profile </Link>
 
       <div className="logout-btn">

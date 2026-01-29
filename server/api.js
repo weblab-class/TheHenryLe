@@ -59,6 +59,55 @@ router.get("/random-building", async (req, res) => {
     res.status(500).send({ error: "Server error fetching building" });
   }
 });
+// POST /api/game/finish
+router.post("/game/finish", auth.ensureLoggedIn, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { guessesThisGame } = req.body;
+
+    if (typeof guessesThisGame !== "number") {
+      return res.status(400).send({ error: "Invalid guess count" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).send({ error: "User not found" });
+
+    user.totalAttempts += 1;
+    user.totalGuesses += guessesThisGame;
+
+    await user.save();
+
+    const average = user.totalAttempts === 0 ? 0 : user.totalGuesses / user.totalAttempts;
+
+    res.send({
+      totalAttempts: user.totalAttempts,
+      totalGuesses: user.totalGuesses,
+      averageGuesses: average,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: "Server error updating stats" });
+  }
+});
+// GET /api/profile/stats
+router.get("/profile/stats", auth.ensureLoggedIn, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).send({ error: "User not found" });
+
+    const average = user.totalAttempts === 0 ? 0 : user.totalGuesses / user.totalAttempts;
+
+    res.send({
+      totalAttempts: user.totalAttempts,
+      totalGuesses: user.totalGuesses,
+      averageGuesses: average,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: "Server error fetching stats" });
+  }
+});
+
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {
   console.log(`API route not found: ${req.method} ${req.url}`);

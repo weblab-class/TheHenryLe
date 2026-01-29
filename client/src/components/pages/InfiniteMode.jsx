@@ -7,6 +7,7 @@ const InfiniteMode = () => {
 
   const startGame = () => {
     console.log("startGame called");
+    console.log(building);
 
     get("/api/random-building").then((b) => {
       setBuilding(b);
