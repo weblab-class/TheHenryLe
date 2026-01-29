@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 
 const BuildingSchema = new mongoose.Schema({
-  direction: { type: String, required: true },
+  name: { type: String, required: true },
+  direction: { type: String, required: false, default: "" },
   number: { type: Number, required: true },
   questions: {
     q1: { type: Boolean, default: false },
